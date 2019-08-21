@@ -5,9 +5,7 @@ object Part1Section2 {
       number = args(0).toInt
     }
     catch {
-      case _: java.lang.ArrayIndexOutOfBoundsException =>
-        println("Need to provide at least one argument.")
-        System.exit(1)
+      case _: java.lang.ArrayIndexOutOfBoundsException => number = 10
       case _: java.lang.NumberFormatException =>
         println("Need to provide an integer value, not a string.")
         System.exit(1)
@@ -21,17 +19,24 @@ object Part1Section2 {
     val concatIntsFunction = (a: Int) => { (b: Int) => { b.toString + a.toString} }
 
     val concatFiveCurried = concatIntsFunction(5)
-    println(concatFiveCurried(3)) // 35
+    println(concatFiveCurried(number)) // number + "5"
     val concatIntsUncurried = uncurry(concatIntsFunction)
-    println(concatIntsUncurried(5, 3)) // 35
+    println(concatIntsUncurried(5, number)) // number + "5"
 
     val reCurryConcatInt = curry(concatIntsUncurried)
     val reCurryConcatFive = reCurryConcatInt(5)
-    println(reCurryConcatFive(3)) // 35
+    println(reCurryConcatFive(number)) // number + "5"
+
+    val addTwo = (b: Int) => { b + 2 }
+    val addThree = (a: Int) => {a + 3}
+    val composed = compose(addTwo, addThree)
+    println(composed(number)) // number + 5
   }
 
+  def compose[A,B,C](f: B => C, g: A => B): A => C = { (a: A) => f(g(a)) }
+
   def curry[A,B,C](f: (A, B) => C): (A) => (B => C) = {
-    (a: A) => { (b: B) => f(a, b)}
+    (a: A) =>  (b: B) => f(a, b)
   }
 
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = {
