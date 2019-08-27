@@ -31,6 +31,9 @@ object Part1Section2 {
     val addThree = (a: Int) => {a + 3}
     val composed = compose(addTwo, addThree)
     println(composed(number)) // number + 5
+
+    val addFive = addTwo andThen addThree
+    println(addFive(number)) // number + 5
   }
 
   def compose[A,B,C](f: B => C, g: A => B): A => C = { (a: A) => f(g(a)) }
