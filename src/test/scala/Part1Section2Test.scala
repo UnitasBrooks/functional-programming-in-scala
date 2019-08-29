@@ -1,8 +1,6 @@
 import Part1Section2._
 import org.scalatest.FunSpec
 
-
-
 class Part1Section2Test extends FunSpec {
   trait Fixture  {
     val divideThree: Int => Int = (i: Int) => i / 3
@@ -71,10 +69,5 @@ class Part1Section2Test extends FunSpec {
     }
 
   }
-
-
-
-
-
 }
 
