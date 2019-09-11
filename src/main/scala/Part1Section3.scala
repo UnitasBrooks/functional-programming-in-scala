@@ -1,76 +1,82 @@
+import Part1Section3.x
+import Part1Section3Notes.List.sum
+import Part1Section3Notes._
+
 object Part1Section3 extends App {
-  /*
-  This is simply a data type declaration
-  A trait is an abstract interface with or without methods on it (in our case without)
-  This is almost exactly the same as an abstract class:
-      abstract class List[+A]
-  Sealed implies that all implementations of this trait must exist in this file
-  A is our parameterized type, it can be a list of anything basically
-  The plus means the list will be covariant with regards to A, so you could declare:
-      val list: List[ParentClass] = List[ChildClass]()
-  If we left off the + we would only be able to assign a list of ParentClass to type ParentClass
-  Wow that's a lot to unpack...
-  */
-  sealed trait List[+A]
 
-  /*
-  A case is a constructor or implementation of List
-  Here we are creating a nil object which is a child of our list object with Nothing as the type of data it will hold.
-  */
-  case object Nil extends List[Nothing]
-
-  /*
-  This is a second case constructor, (Cons for short)
-  This is a constructor for a list that is not empty. It has a head object an the rest of the list as parameters.
-   */
-  case class Cons[+A](head: A, tail: List[A]) extends List[A]
-
-  // Companion object for our List type, we can attach functions that can be called off of Lists here
-  object List {
-
-    // Creates a LL full of `a` using our Cons
-    def fill[A](n: Int, a: A): List[A] = {
-      @scala.annotation.tailrec
-      def go(i: Int, list: List[A]): List[A] = {
-        if(i == n) list
-        else go(i + 1, Cons(a, list))
-      }
-      go(1, Cons(a, Nil))
-    }
-
-    // Just for fun fills a list with integers from 1 to n
-    def fillWithSequence(n: Int): List[Int] = {
-      @scala.annotation.tailrec
-      def go(i: Int, list: List[Int]): List[Int] = {
-        if(i < 2) list
-        else go(i - 1, Cons(i - 1, list))
-      }
-      go(n, Cons(n, Nil))
-    }
-
-    // Just for fun, create a function that calls another function on each object in the list
-    @scala.annotation.tailrec
-    def iterate[A, B](as: List[A], f: A => B): Unit = as match {
-      case Nil =>
-      case Cons(x, xs) =>
-        f(x)
-        iterate(xs, f)
-    }
-
-    // Multiplies each element
-    def product(ds: List[Double]): Double = ds match {
-      case Nil => 1.0
-      case Cons(0.0, _) => 0.0
-      case Cons(x,xs) => x * product(xs)
-    }
-
-    // Takes N arguments and recursively adds them to a list
-    def apply[A](as: A*): List[A] =
-      if (as.isEmpty) Nil
-      else Cons(as.head, apply(as.tail: _*))
+  // Exercise 3.1
+  val x: Int = List(1,2,3,4,5) match {
+    // List(anything, 2, 4, anything)
+    case Cons(x, Cons(2, Cons(4, _))) => x
+    // Nil
+    case Nil => 42
+    // List(anything, anything, 3, 4, anything) *** this get's called for (1, 2, 3, 4, 5)
+    case Cons(x, Cons(y, Cons(3, Cons(4, _)))) =>x+y
+    // List(anything, anything)
+    // This would get called if it was above the previous case for list 1,2,3,4,5
+    case Cons(h, t) => h + sum(t)
+    // Anything else, can't figure out how to get this to be honest...
+    case _ => 101
   }
 
-  val is: List[Int] = List.fillWithSequence(5)
+  // Exercise 3.2
+  def tail[A](as: List[A]): List[A] = as match {
+    case Nil => Nil
+    case Cons(_, Nil) => Nil
+    case Cons(_, xs) => xs
+  }
+
+  // Exercise 3.3
+  def setHead[A](as: List[A], newHead: A): List[A] = as match {
+    case Nil => Cons(newHead, Nil)
+    case Cons(_, xs) => Cons(newHead, xs)
+  }
+
+  // Exercise 3.4
+  def drop[A](as: List[A], n: Int): List[A] = {
+    @scala.annotation.tailrec
+    def go(list: List[A], i: Int): List[A] = list match {
+      case Nil => Nil
+      case Cons(_, Nil) => if(i == n) list else Nil
+      case Cons(_, xs) => if(i < n) go(xs, i + 1) else list
+    }
+    go(as, 0)
+  }
+
+  // Exercise 3.5
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = {
+    @scala.annotation.tailrec
+    def go(list: List[A]): List[A] = list match {
+      case Nil => Nil
+      case Cons(x, xs) => if(!f(x)) list else go(xs)
+    }
+    go(l)
+  }
+
+  // Exercise 3.6
+  def init[A](l: List[A]): List[A] = l match {
+    case Cons(_, Nil) => Nil
+    case Cons(x, xs) => Cons(x, init(xs))
+  }
+
+  val is = List(1,2,3,4,5)
+
+  println("original")
   List.iterate(is, println)
 
+  println("\ntail removed")
+  List.iterate(tail(is), println)
+
+  println("\nsetting 0 to head")
+  List.iterate(setHead(is, 0), println)
+
+  println("\nremoving first 2 items")
+  List.iterate(drop(is, 2), println)
+
+  println("\nremoving till we don't get a 1 2 or 3")
+  val odd: Int => Boolean = (i: Int) => i == 1 || i == 2 || i == 3
+  List.iterate(dropWhile(is, odd), println)
+
+  println("\nremove last element")
+  List.iterate(init(is), println)
 }

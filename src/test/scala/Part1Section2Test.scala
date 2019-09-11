@@ -1,4 +1,5 @@
 import Part1Section2._
+import Part1Section2Notes.formatResult
 import org.scalatest.FunSpec
 
 class Part1Section2Test extends FunSpec {
@@ -9,6 +10,14 @@ class Part1Section2Test extends FunSpec {
     val concatInts: (Int, Int) => String = (x: Int, y: Int) => (x.toString + y.toString)
     val sortedArray: Array[Int] = Array(1, 2, 3, 4, 5, 6)
     val array: Array[Int] = Array(1, 5, 3, 4, 4, 0)
+  }
+
+  describe("formatResult") {
+    new Fixture {
+      it("should create a string based on the result of a (Int, Int) function") {
+        assert(formatResult("times ten", 3, timesTen) == "The times ten of 3 is 30")
+      }
+    }
   }
 
   describe("compose") {
@@ -51,23 +60,18 @@ class Part1Section2Test extends FunSpec {
     }
   }
 
-  describe("formatResult") {
-    new Fixture {
-      it("should create a string based on the result of a (Int, Int) function") {
-        assert(formatResult("times ten", 3, timesTen) == "The times ten of 3 is 30")
-      }
-    }
-  }
-
   describe("fib") {
     it("should return 1 when 1 is supplied") {
       assert(fib(1) == 1)
     }
 
+    it("should return 0 when 0 is supplied") {
+      assert(fib(0) == 0)
+    }
+
     it("should return 55 when 10 is supplied") {
       assert(fib(10) == 55)
     }
-
   }
 }
 
