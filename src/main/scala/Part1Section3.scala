@@ -1,11 +1,11 @@
-import Part1Section3.x
+import Part1Section3.y
 import Part1Section3Notes.List.sum
 import Part1Section3Notes._
 
 object Part1Section3 extends App {
 
   // Exercise 3.1
-  val x: Int = List(1,2,3,4,5) match {
+  val y: Int = List(1,2,3,4,5) match {
     // List(anything, 2, 4, anything)
     case Cons(x, Cons(2, Cons(4, _))) => x
     // Nil
@@ -59,8 +59,16 @@ object Part1Section3 extends App {
     case Cons(x, xs) => Cons(x, init(xs))
   }
 
-  val is = List(1,2,3,4,5)
+  // Exercise 3.9
+  def length[A](as: List[A]): Int = {
+    val f = (_: A, n: Int) => n + 1
+    foldRight(as, 0)(f)
+  }
 
+
+
+  val is = List(1,2,0,4,9,0)
+  println(length(is))
   println("original")
   List.iterate(is, println)
 

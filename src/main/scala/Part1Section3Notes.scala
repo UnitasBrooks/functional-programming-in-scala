@@ -25,6 +25,7 @@ object Part1Section3Notes extends App {
    */
   case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
+
   // Companion object for our List type, we can attach functions that can be called off of Lists here
   object List {
 
@@ -81,13 +82,16 @@ object Part1Section3Notes extends App {
       go(list, List())
     }
 
-
     // Takes N arguments and recursively adds them to a list
     def apply[A](as: A*): List[A] =
       if (as.isEmpty) Nil
       else Cons(as.head, apply(as.tail: _*))
   }
 
-  val is: List[Int] = List.fillWithSequence(5)
-  List.iterate(is, println)
+  // Gives a base case of z and calls f on each member of the list from left to right or head to tail
+  def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
 }
