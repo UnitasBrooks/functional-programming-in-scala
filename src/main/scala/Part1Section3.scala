@@ -1,4 +1,4 @@
-import Part1Section3.y
+import Part1Section3Notes.Nil
 import Part1Section3Notes.List.sum
 import Part1Section3Notes._
 
@@ -65,10 +65,86 @@ object Part1Section3 extends App {
     foldRight(as, 0)(f)
   }
 
+  // Exercise 3.10
+  def foldLeft[A,B](as: List[A], z: B)(g: (B, A) => B): B = {
+    @scala.annotation.tailrec
+    def go(n: B, list: List[A]): B = list match {
+      case Nil => n
+      case Cons(x, xs) => go(g(n,x),xs)
+    }
+    go(z, as)
+  }
 
+  // Exercise 3.11
+  def sumFoldLeft(is: List[Int]): Int = foldLeft(is, 0)(_ + _)
+  def productFoldLeft(ds: List[Double]): Double = foldLeft(ds, 1.0)(_ * _)
 
-  val is = List(1,2,0,4,9,0)
-  println(length(is))
+  // Exercise 3.12
+  def reverseList[A](as: List[A]): List[A] = {
+    foldLeft(as, List[A]())((prev: List[A], next: A) => Cons(next, prev))
+  }
+
+  // Exercise 3.14
+  def append[A](firstList: List[A], secondList: List[A]): List[A] = {
+    foldRight(firstList, secondList)((h,t) => Cons(h, t))
+  }
+
+  // Exercise 3.15
+  def concatListofLists[A](ls: List[List[A]]): List[A] = {
+    foldRight(ls, List[A]())(append)
+  }
+
+  // Exercise 3.16
+  def addOne(as: List[Int]): List[Int] = {
+    foldRight(as, List[Int]())((h, t) => Cons(h + 1, t))
+  }
+
+  // Exercise 3.17
+  def doubleToString(as: List[Double]): List[String] = {
+    foldRight(as, List[String]())((h, t) => Cons(h.toString, t))
+  }
+
+  // Exercise 3.18
+  def map[A,B](as: List[A])(f: A => B): List[B] = {
+    foldRight(as, List[B]())((h,t) => Cons(f(h), t))
+  }
+
+  // Exercise 3.19
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    foldRight(as, List[A]())((h,t) => if(f(h)) Cons(h, t)  else t)
+  }
+
+  // Exercise 3.20
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = {
+    foldRight(as, List[B]())((h: A, t: List[B]) => concatListofLists(List(f(h), t)))
+  }
+
+  // Exercise 3.21
+  def flatMapFilter[A](as: List[A])(f: A => Boolean): List[A] = {
+    flatMap(as)((a: A) => if(f(a)) Nil else List(a))
+  }
+
+  // Exercise 3.22
+  def addLists(isOne: List[Int], isTwo: List[Int]): List[Int] = {
+    def go(x: List[Int], z: List[Int], newList: List[Int]): List[Int] = (x,z) match  {
+      case (Cons(xh, xt), Cons(zh, zt)) => Cons(xh + zh, go(xt, zt, newList))
+      case (Nil, Cons(zh, zt)) => Cons(zh, go(Nil, zt, newList))
+      case (Cons(xh, xt), Nil) => Cons(xh, go(xt, Nil, newList))
+      case (Nil, Nil) => newList
+    }
+    go(isOne, isTwo, List[Int]())
+  }
+
+  val is = List(3, 9, 1, 11)
+  val is2 = List(3, 9, 1, 11, 300)
+  println(addLists(is,is2))
+
+  println(flatMapFilter(is)(d => d % 3 == 0))
+  //val ss: List[String] = doubleToString(is)
+
+  println(append(is, List(12.0, 3.0)))
+
+  //println(productFoldLeft(is))
   println("original")
   List.iterate(is, println)
 
@@ -83,7 +159,7 @@ object Part1Section3 extends App {
 
   println("\nremoving till we don't get a 1 2 or 3")
   val odd: Int => Boolean = (i: Int) => i == 1 || i == 2 || i == 3
-  List.iterate(dropWhile(is, odd), println)
+  //List.iterate(dropWhile(is, odd), println)
 
   println("\nremove last element")
   List.iterate(init(is), println)

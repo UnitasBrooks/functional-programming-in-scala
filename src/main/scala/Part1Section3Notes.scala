@@ -71,7 +71,7 @@ object Part1Section3Notes extends App {
       case Cons(x,xs) => x * product(xs)
     }
 
-    // Returns a list (reversed) of all items that match the f
+    // Just for fun returns a list (reversed) of all items that match the f
     def dropIf[A](list: List[A], f: A => Boolean): List[A] =  {
       @scala.annotation.tailrec
       def go(oldList: List[A], newList: List[A]): List[A] = oldList match {
@@ -92,6 +92,9 @@ object Part1Section3Notes extends App {
   def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B =
     as match {
       case Nil => z
-      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+      case Cons(x, xs) => f(
+        x,
+        foldRight(xs, z)(f)
+      )
     }
 }
