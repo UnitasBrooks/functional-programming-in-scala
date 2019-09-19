@@ -125,6 +125,8 @@ object Part1Section3 extends App {
   }
 
   // Exercise 3.22
+  // My implementation is a bit fancier than is maybe needed, if one list is larger than the other I push the extra
+  // items onto the resulting list after adding up subsets of the larger with the smaller.
   def addLists(isOne: List[Int], isTwo: List[Int]): List[Int] = {
     def go(x: List[Int], z: List[Int], newList: List[Int]): List[Int] = (x,z) match  {
       case (Cons(xh, xt), Cons(zh, zt)) => Cons(xh + zh, go(xt, zt, newList))
@@ -133,6 +135,15 @@ object Part1Section3 extends App {
       case (Nil, Nil) => newList
     }
     go(isOne, isTwo, List[Int]())
+  }
+
+  // Exercise 3.23
+  def zipWith[A, B](isOne: List[A], isTwo: List[A])(f: (A, A) => B): List[B] = {
+    def go(x: List[A], z: List[A], newList: List[B]): List[B] = (x,z) match  {
+      case (Cons(xh, xt), Cons(zh, zt)) => Cons(f(xh, zh), go(xt, zt, newList))
+      case (Nil, Nil) || (Nil, _) || (_, Nil) => newList
+    }
+    go(isOne, isTwo, List[B]())
   }
 
   val is = List(3, 9, 1, 11)
