@@ -1,3 +1,5 @@
+// Scala List implementation https://www.scala-lang.org/api/current/scala/collection/immutable/List.html
+
 object Part1Section3Notes extends App {
   /*
   This is simply a data type declaration

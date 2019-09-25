@@ -138,40 +138,32 @@ object Part1Section3 extends App {
   }
 
   // Exercise 3.23
-  def zipWith[A, B](isOne: List[A], isTwo: List[A])(f: (A, A) => B): List[B] = {
+  def zipWith[A, B](asOne: List[A], asTwo: List[A])(f: (A, A) => B): List[B] = {
     def go(x: List[A], z: List[A], newList: List[B]): List[B] = (x,z) match  {
       case (Cons(xh, xt), Cons(zh, zt)) => Cons(f(xh, zh), go(xt, zt, newList))
-      case (Nil, Nil) || (Nil, _) || (_, Nil) => newList
+      case (_, _) => newList
     }
-    go(isOne, isTwo, List[B]())
+    go(asOne, asTwo, List[B]())
   }
 
-  val is = List(3, 9, 1, 11)
-  val is2 = List(3, 9, 1, 11, 300)
-  println(addLists(is,is2))
+  // Exercise 3.24
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    @scala.annotation.tailrec
+    def search(aSup: List[A], aSub: List[A], seeking: Boolean): Boolean = (aSup, aSub) match {
+      case (Cons(supHead, supTail), Cons(subHead, subTail)) =>
+        if(subHead == supHead)
+          // We found a match, start seeking
+          search(supTail, subTail, seeking = true)
+        else
+          // If we were seeking our chain has been broken, start over with the original sub, but continue on with tail
+          search(supTail, sub, seeking=false)
+      // If we reached the end of either list return seeking
+      case (_, _) => seeking
+    }
+    search(sup, sub, seeking = false)
+  }
 
-  println(flatMapFilter(is)(d => d % 3 == 0))
-  //val ss: List[String] = doubleToString(is)
-
-  println(append(is, List(12.0, 3.0)))
-
-  //println(productFoldLeft(is))
-  println("original")
-  List.iterate(is, println)
-
-  println("\ntail removed")
-  List.iterate(tail(is), println)
-
-  println("\nsetting 0 to head")
-  List.iterate(setHead(is, 0), println)
-
-  println("\nremoving first 2 items")
-  List.iterate(drop(is, 2), println)
-
-  println("\nremoving till we don't get a 1 2 or 3")
-  val odd: Int => Boolean = (i: Int) => i == 1 || i == 2 || i == 3
-  //List.iterate(dropWhile(is, odd), println)
-
-  println("\nremove last element")
-  List.iterate(init(is), println)
+  val is = List(3, 9, 1, 11, 30)
+  val is2 = List(0, 0, 3, 9, 1,11, 31)
+  println(hasSubsequence(is2,is))
 }
