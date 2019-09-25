@@ -157,13 +157,17 @@ object Part1Section3 extends App {
         else
           // If we were seeking our chain has been broken, start over with the original sub, but continue on with tail
           search(supTail, sub, seeking=false)
-      // If we reached the end of either list return seeking
+      // If the first list is finished but we still have items in the sub list, return
+      case (Nil, Cons(_, _)) => false
+      // If we reached this default case return seeking
       case (_, _) => seeking
     }
+
     search(sup, sub, seeking = false)
   }
 
   val is = List(3, 9, 1, 11, 30)
-  val is2 = List(0, 0, 3, 9, 1,11, 31)
+  val is2 = List(3, 0, 3, 9, 1, 11, 30)
   println(hasSubsequence(is2,is))
+
 }
