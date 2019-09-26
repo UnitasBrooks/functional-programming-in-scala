@@ -1,6 +1,6 @@
 import Part1Section3ListNotes.List.sum
 import Part1Section3ListNotes._
-import Part1Section3TreeNotes.{Branch, Leaf, Tree, TreeNil}
+import Part1Section3TreeNotes.{Branch, Leaf, Tree}
 
 object Part1Section3 extends App {
 
@@ -166,18 +166,21 @@ object Part1Section3 extends App {
   }
 
   // Exercise 3.25
-  def treeSize[A](tree: Tree[A]): Int = {
-    def count(tree: Tree[A], currentCount: Int): Int = tree match {
-      case Branch(Leaf(_), rightTree) => count(rightTree, currentCount + 1)
-      case Branch(leftTree, Leaf(_)) => count(leftTree, currentCount + 1)
-      case Leaf(_) => currentCount
-    }
+  def treeSize[A](tree: Tree[A]): Int = tree match {
+    case Branch(left, right) => 1 + treeSize(left) + treeSize(right)
+    case Leaf(_) => 1
   }
 
-  val is = List(3)
-  val is2 = List(3, 0, 3, 9, 1, 11, 30)
-  println(hasSubsequence(is2,is))
+  // Exercise 3.26
+  def treeMax(tree: Tree[Int]): Int = {
+    def findMax(search: Tree[Int], currentMax: Int): Int = search match {
+      case Branch(left, right) => findMax(left, currentMax) max findMax(right, currentMax)
+      case Leaf(n) => currentMax max n
+    }
+    findMax(tree, currentMax = -1)
+  }
 
+  val tree = Branch(Branch(Leaf(10000), Leaf(0)), Branch(Leaf(20000), Leaf(3000000)))
 
-
+  println(treeMax(tree))
 }
