@@ -55,6 +55,7 @@ object Part1Section3 extends App {
 
   // Exercise 3.6
   def init[A](l: List[A]): List[A] = l match {
+    case Nil => Nil
     case Cons(_, Nil) => Nil
     case Cons(x, xs) => Cons(x, init(xs))
   }
@@ -180,7 +181,40 @@ object Part1Section3 extends App {
     findMax(tree, currentMax = -1)
   }
 
-  val tree = Branch(Branch(Leaf(10000), Leaf(0)), Branch(Leaf(20000), Leaf(3000000)))
+  // Exercise 3.27
+  def maxDepth[A](tree: Tree[A]): Int =  {
+    def findDepth(search: Tree[A], currentDepth: Int, maxDepth: Int): Int = search match {
+      case Branch(left, right) => findDepth(left, currentDepth + 1, maxDepth) max
+        findDepth(right, currentDepth + 1, maxDepth)
+      case Leaf(_) => currentDepth max maxDepth
+    }
+    findDepth(tree, 0, 0)
+  }
 
-  println(treeMax(tree))
+  // Exercise 3.28
+  def treeMap[A](tree: Tree[A])(f: (A => A)): Tree[A] = {
+    def map(tree: Tree[A]): Tree[A] = tree match {
+      case Branch(left, right) => Branch(map(left), map(right))
+      case Leaf(n) => Leaf(f(n))
+    }
+    map(tree)
+  }
+
+  // Exercise 3.29
+  def fold[A,B](t: Tree[A])(l: A => B)(b: (B,B) => B): B = t match {
+    case Leaf(n) => l(n)
+    case Branch(left, right) => b(fold(left)(l)(b), fold(right)(l)(b))
+  }
+
+  def sizeFold[A](t: Tree[A]): Int = {
+    fold(t)(_ => 1)(_ + _ + 1)
+  }
+
+  def maxFold(t: Tree[Int]): Int = {
+    fold(t)(n => n)(_ max _)
+  }
+
+  val tree = Branch(Branch(Branch(Leaf(10000), Leaf(1)), Leaf(10)), Branch(Leaf(20000), Branch(Branch(Leaf(1), Leaf(1)), Leaf(1))))
+
+  println(maxFold(tree))
 }
