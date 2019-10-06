@@ -1,6 +1,6 @@
 // Scala List implementation https://www.scala-lang.org/api/current/scala/collection/immutable/List.html
 
-object Part1Section3ListNotes extends App {
+object Part1Section3ListNotes {
   /*
   This is simply a data type declaration
   A trait is an abstract interface with or without methods on it (in our case without)
