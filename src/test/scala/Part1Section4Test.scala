@@ -1,4 +1,4 @@
-import Part1Section4.{None, Some, Option}
+import Part1Section4.{None, Some, Option, variance}
 import org.scalatest.FunSpec
 
 
@@ -55,6 +55,12 @@ class Part1Section4Test extends FunSpec {
     }
     it("should return None if called on None") {
       assert(None.filter(isThree) == None)
+    }
+  }
+
+  describe("variance") {
+    it("should calculate the variance of a given sequence") {
+      assert(variance(Seq(1.0, 2.0, 3.0)) == Some(0.6666666666666666))
     }
   }
 

@@ -1,4 +1,6 @@
-object Part1Section4 {
+object Part1Section4 extends App {
+  // Exercise 4.1
+
   sealed trait Option[+A] {
     def map[B](f: A => B): Option[B] = this match {
       case None => None
@@ -27,4 +29,15 @@ object Part1Section4 {
   }
   case class Some[+A](get: A) extends Option[A]
   case object None extends Option[Nothing]
+
+
+  // Exercise 4.2
+  def mean(xs: Seq[Double]): Double = {
+    xs.foldLeft(0.0)(_ + _) / xs.length
+  }
+  def variance(xs: Seq[Double]): Option[Double] = {
+    // This is hideous and I hate it
+    Some(mean(xs)) flatMap (m => Some(mean(xs.map(x => math.pow(x - m, 2)))))
+  }
+
 }
